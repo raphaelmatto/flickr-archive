@@ -1,3 +1,11 @@
+images/
+json/
+.DS_Store
+albums/
+cache/
+html/
+thumbnails/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

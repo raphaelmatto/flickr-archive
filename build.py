@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Author: Raphael Matto
+# https://github.com/raphaelmatto/flickr-archive
+# Created March 2019.
+
 from __future__ import division
 
 import os
@@ -36,6 +40,7 @@ def _set_up_logging(logging_level=logging.DEBUG):
         format="%(levelname)s: %(asctime)s: %(message)s",
     )
     logging.getLogger().addHandler(logging.StreamHandler())
+    return log
 
 
 def _create_dirs():
@@ -1129,19 +1134,20 @@ def _key_to_int(_dict):
 def run():
     """
     # Todo: option to make it only post public images/albums
-    # Todo: add paging to albums, check out: file:///Volumes/raphe/projects/2019/travis/html/albums/72057594084558681.html
+    # Todo: add paging to albums
     # Todo: add home link to individual pages
+    # Todo: (5 of 12345) Creating thumbnail image ...
+    # Todo: cli for "overwrite" and other vars
     """
 
-    image_map = _create_image_map(write=True)
-
     _create_dirs()
+    image_map = _create_image_map(write=True)
     _create_thumbnail_images(image_map, overwrite=False)
     _create_albums_symlinks(image_map)
     _create_profile_html(image_map)
     _create_albums_html(image_map)
 
-    tags, favs, views, comments = _create_images_html(image_map, overwrite=True)
+    tags, favs, views, comments = _create_images_html(image_map, overwrite=False)
     # tags, favs, views, comments, image_map = _get_cache()  # For testing.
 
     tags = _combine_tags(tags)
@@ -1161,6 +1167,8 @@ def run():
     _create_types_html("view", views, image_map, overwrite=True)
     _create_types_html("comment", comments, image_map, overwrite=True)
 
+    logging.info("Done!")
+
     # _create_testimonials_html()
     # _create_contacts_html()
     # _create_followers_html()
@@ -1170,5 +1178,13 @@ def run():
 
 
 if __name__ == "__main__":
-    _set_up_logging()
-    run()
+    try:
+        log = _set_up_logging()
+        run()
+    except Exception as e:
+        logging.error(
+            "Something unexpected happened. Send %s to raphaelmatto@gmail.com for troubleshooting." % log
+        )
+        logging.error(e.message)
+        logging.exception("Got exception on main handler:")
+        raise
