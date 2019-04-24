@@ -415,8 +415,7 @@ def _create_images_html(image_map, overwrite=True):
                 overwrite=overwrite,
             )
         except Exception as e:
-            logging.exception(e)
-            exit()
+            logging.exception(e.message)
 
     logging.info("Writing ./cache/tags.json ...")
     with open("./cache/tags.json", "w") as fh:
@@ -567,7 +566,7 @@ def _get_table(type, types, image_map):
             {tr}
             <td>
                 <a href=./{type}s/{num}.html><img src={link}></a><br>
-                <a href=./{type}s/{num}.html>{num} {type} ({num_photos})</a><br>
+                <a href=./{type}s/{num}.html>{num} {type}s ({num_photos})</a><br>
             </td>
 
         """.format(
@@ -1004,7 +1003,7 @@ def _create_type_html(type, num_type, images, page_num, image_map, overwrite):
             </head>
             <body>
                 <div class=padding>
-                    <h1><a href={url}>{title}</a></h1>
+                    <h1>{title}</h1>
                     <hr>
                     <a href=../index.html>Home</a> / <a href=../{type}s-{page_num}.html>Most {type}ed, page {page_num}</a>
                     <hr>
@@ -1142,13 +1141,13 @@ def run():
 
     _create_dirs()
     image_map = _create_image_map(write=True)
+    tags, favs, views, comments = _create_images_html(image_map, overwrite=False)
+    # tags, favs, views, comments, image_map = _get_cache()  # For testing.
+
     _create_thumbnail_images(image_map, overwrite=False)
     _create_albums_symlinks(image_map)
     _create_profile_html(image_map)
     _create_albums_html(image_map)
-
-    tags, favs, views, comments = _create_images_html(image_map, overwrite=False)
-    # tags, favs, views, comments, image_map = _get_cache()  # For testing.
 
     tags = _combine_tags(tags)
     tags = _sort_by_value_len(tags)
