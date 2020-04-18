@@ -376,7 +376,7 @@ def _create_image_html(json_data, image_map):
         rotation=json_data["rotation"],
         date_imported=json_data["date_imported"],
         tagging_permissions=json_data["tagging_permissions"],
-        exif=_get_exif(json_data["exif"]),
+        exif=_get_exif(json_data.get("exif"),
         privacy=_get_privacy(json_data["privacy"]),
     )
     return html
